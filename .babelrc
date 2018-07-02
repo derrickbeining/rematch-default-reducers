@@ -1,0 +1,17 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": "> 0.5%, last 2 versions, Firefox ESR, not dead"
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    ["ramda", {"useES": false}],
+    "add-module-exports",
+    "annotate-pure-calls"
+  ]
+}

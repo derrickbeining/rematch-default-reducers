@@ -1,0 +1,91 @@
+{
+  "author": "Derrick Beining",
+  "dependencies": {
+    "pluralize": "^7.0.0",
+    "ramda": "^0.25.0",
+    "ramda-adjunct": "^2.9.0"
+  },
+  "description": "Generate reducers for @rematch/core based on your models' intial state",
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.49",
+    "@babel/preset-env": "^7.0.0-beta.49",
+    "@babel/register": "^7.0.0-beta.49",
+    "@rematch/core": "1.0.0-beta.4",
+    "babel-loader": "^8.0.0-beta.3",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-annotate-pure-calls": "^0.3.0",
+    "babel-plugin-ramda": "^1.6.1",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-standard-pure-fp": "^2.0.1",
+    "eslint-plugin-better": "^0.1.5",
+    "eslint-plugin-fp": "^2.3.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "husky": "^0.14.3",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
+    "rimraf": "^2.6.2",
+    "source-map-support": "^0.5.6",
+    "uglifyjs-webpack-plugin": "^1.2.7",
+    "webpack": "^4.10.2",
+    "webpack-cli": "^2.1.4",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "@rematch",
+    "rematch",
+    "redux",
+    "state management",
+    "reducers"
+  ],
+  "license": "ISC",
+  "main": "dist/index.js",
+  "module": "src/index.js",
+  "name": "rematch-default-reducers",
+  "nyc": {
+    "branches": 75,
+    "cache": true,
+    "check-coverage": true,
+    "exclude": [
+      "coverage/**",
+      "test/**",
+      "test{,-*}.js",
+      "**/*.test.js",
+      "**/__tests__/**",
+      "**/__test__/**",
+      "**/node_modules/**",
+      "dist/**"
+    ],
+    "functions": 100,
+    "lines": 100,
+    "per-file": true,
+    "reporter": [
+      "text"
+    ],
+    "statements": 100
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/derrickbeining/rematch-default-reducers"
+  },
+  "scripts": {
+    "build:d": "NODE_ENV=development webpack",
+    "build:p": "NODE_ENV=production webpack",
+    "check-coverage": "nyc npm t -- --require ./src/index.js",
+    "dev": "yarn build:d -w",
+    "lint": "eslint -f codeframe '*.js' './src/**/*.js'",
+    "lint:fix": "eslint -f codeframe '*.js' './src/**/*.js' --fix",
+    "prepush": "npm run lint && npm run check-coverage",
+    "test": "NODE_ENV=test node ./node_modules/.bin/mocha '__test__' -r source-map-support/register -r @babel/register -r __test__/setup  --recursive --exit",
+    "test:w": "yarn test -w"
+  },
+  "sideEffects": false,
+  "version": "0.1.0"
+}

@@ -1,0 +1,19 @@
+{
+  "extends": ["standard-pure-fp", "prettier"],
+  "env": {
+    "mocha": true,
+    "es6": true
+  },
+  "root": true,
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+
+  "rules": {
+    "fp/no-rest-parameters": "off",
+    "fp/no-throw": "off",
+    "fp/no-nil": "off",
+    "better/no-new": "off",
+    "better/no-ifs": "off"
+  }
+}
