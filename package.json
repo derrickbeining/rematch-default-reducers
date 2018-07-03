@@ -1,5 +1,11 @@
 {
-  "author": "Derrick Beining",
+  "author": {
+    "name": "Derrick Beining",
+    "url": "https://github.com/derrickbeining"
+  },
+  "bugs": {
+    "url": "https://github.com/derrickbeining/rematch-default-reducers/issues"
+  },
   "dependencies": {
     "pluralize": "^7.0.0",
     "ramda": "^0.25.0",
@@ -17,6 +23,8 @@
     "babel-plugin-ramda": "^1.6.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "commitizen": "^2.10.1",
+    "cz-conventional-changelog": "^2.1.0",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-config-standard-pure-fp": "^2.0.1",
@@ -29,7 +37,9 @@
     "mocha": "^5.2.0",
     "nyc": "^12.0.2",
     "rimraf": "^2.6.2",
+    "semantic-release": "^15.6.3",
     "source-map-support": "^0.5.6",
+    "travis-deploy-once": "^5.0.1",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "webpack": "^4.10.2",
     "webpack-cli": "^2.1.4",
@@ -46,11 +56,11 @@
     "reducers"
   ],
   "license": "ISC",
-  "main": "dist/index.js",
+  "main": "dist/rematch-default-reducers.js",
   "module": "src/index.js",
   "name": "rematch-default-reducers",
   "nyc": {
-    "branches": 75,
+    "branches": 80,
     "cache": true,
     "check-coverage": true,
     "exclude": [
@@ -63,29 +73,43 @@
       "**/node_modules/**",
       "dist/**"
     ],
-    "functions": 100,
-    "lines": 100,
-    "per-file": true,
+    "functions": 90,
+    "lines": 90,
+    "per-file": false,
     "reporter": [
       "text"
     ],
-    "statements": 100
+    "statements": 90
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/derrickbeining/rematch-default-reducers"
   },
   "scripts": {
+    "build": "npm run build:d && npm run build:p",
     "build:d": "NODE_ENV=development webpack",
     "build:p": "NODE_ENV=production webpack",
-    "check-coverage": "nyc npm t -- --require ./src/index.js",
-    "dev": "yarn build:d -w",
+    "clean": "rimraf dist",
+    "commit": "git-cz",
+    "dev": "npm run build:d -w",
     "lint": "eslint -f codeframe '*.js' './src/**/*.js'",
     "lint:fix": "eslint -f codeframe '*.js' './src/**/*.js' --fix",
-    "prepush": "npm run lint && npm run check-coverage",
-    "test": "NODE_ENV=test node ./node_modules/.bin/mocha '__test__' -r source-map-support/register -r @babel/register -r __test__/setup  --recursive --exit",
-    "test:w": "yarn test -w"
+    "prepublish": "npm run lint && npm test && npm run clean && npm run build",
+    "test": "nyc npm run test:once -- --require ./src/index.js",
+    "test:once": "NODE_ENV=test node ./node_modules/.bin/mocha '__test__' -r source-map-support/register -r @babel/register -r __test__/setup  --recursive --exit",
+    "test:w": "npm run test:once -w",
+    "travis-deploy-once": "travis-deploy-once",
+    "semantic-release": "semantic-release"
   },
   "sideEffects": false,
-  "version": "0.1.0"
+  "unpkg": "dist/rematch-default-reducers.min.js",
+  "version": "0.0.0-development",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    },
+    "ghooks": {
+      "pre-commit": "npm run lint && npm t"
+    }
+  }
 }
