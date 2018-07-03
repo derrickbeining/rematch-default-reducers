@@ -36,14 +36,20 @@ const createReducersFromModel = (opts) =>
   )
 
 /**
- * :: Object(state: any) -> Object(state: any, reducers: {reducer: Function})
- *
- * Takes a Rematch Model and returns a Rematch Reducers object
+ * Takes a the `models` object for @rematch/core and decorates each model
+ * with default reducers/actions generated from each models' inital state
  * @public
  * @function withDefaultReducers
- * @param {{model: {state, reducers?: {reducer: function}}}} models
- * @param {{allowNull: boolean}} opts
- * @returns {{model: {state, reducers: {reducer: function}}}}
+ * @param {{
+    [modelName: string]: {
+      state,
+      reducers?: {
+        [actionName: string]: function
+      }
+    }
+  }} models
+ * @param {{allowNil: boolean}} opts
+ * @returns {{model: {state, reducers: {[actionName: string]: function}}}}
  */
 export const withDefaultReducers = (models, opts = {}) => {
   const _opts = R.merge({allowNil: false}, opts)
