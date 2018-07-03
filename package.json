@@ -94,6 +94,7 @@
     "dev": "npm run build:d -w",
     "lint": "eslint -f codeframe '*.js' './src/**/*.js'",
     "lint:fix": "eslint -f codeframe '*.js' './src/**/*.js' --fix",
+    "precommit": "npm run lint && npm test",
     "prepublish": "npm run lint && npm test && npm run clean && npm run build",
     "test": "nyc npm run test:once -- --require ./src/index.js",
     "test:once": "NODE_ENV=test node ./node_modules/.bin/mocha '__test__' -r source-map-support/register -r @babel/register -r __test__/setup  --recursive --exit",
@@ -107,9 +108,6 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
-    },
-    "ghooks": {
-      "pre-commit": "npm run lint && npm t"
     }
   }
 }
