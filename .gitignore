@@ -1,6 +1,7 @@
 # Misc Internal Dev Stuff #
 #################
 .nyc_output
+coverage.lcov
 
 # Dependencies #
 #################
