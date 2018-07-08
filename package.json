@@ -94,7 +94,7 @@
     "commit": "git-cz",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "dev": "npm run build:d -- -w",
-    "lint": "eslint -f codeframe '*.js' './src/**/*.js'",
+    "lint": "prettier --write 'src/{*.js,**/*.js}' && eslint -f codeframe '*.js' './src/**/*.js'",
     "lint:fix": "eslint -f codeframe '*.js' './src/**/*.js' --fix",
     "precommit": "npm run lint && npm test",
     "prepublish": "npm run lint && npm test && npm run clean && npm run build",
