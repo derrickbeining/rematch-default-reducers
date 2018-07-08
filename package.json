@@ -84,7 +84,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/derrickbeining/rematch-default-reducers.git"
+    "url": "https://github.com/derrickbeining/rematch-default-reducers"
   },
   "scripts": {
     "build": "npm run build:d && npm run build:p",
