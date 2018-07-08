@@ -8,12 +8,12 @@ const _insertWhere = (state, {predicate, payload}) =>
       R.addIndex(R.findIndex)(predicate),
       R.always(payload),
       R.identity,
-    ]),
+    ])
   )
 
 const _insertAllWhere = R.pipe(
   _insertWhere,
-  R.flatten,
+  R.flatten
 )
 
 const _removeWhere = (state, predicate) =>
@@ -21,7 +21,7 @@ const _removeWhere = (state, predicate) =>
     R.converge(omitIndexes, [
       R.o(Array.of, R.addIndex(R.findIndex)(predicate)),
       R.identity,
-    ]),
+    ])
   )
 
 const _removeAllWhere = (state, predicate) =>
@@ -34,27 +34,19 @@ export const _filter = (state, predicate) => state.filter(predicate)
 export const _insert = (state, specs) => {
   const {where, payload} = specs
 
-  if (where) {
-    return _insertWhere(state, {
-      predicate: where,
-      payload: payload,
-    })
-  }
-
-  return _push(state, payload)
+  return _insertWhere(state, {
+    predicate: where,
+    payload: payload,
+  })
 }
 
 export const _insertAll = (state, specs) => {
   const {where, payload} = specs
 
-  if (where) {
-    return _insertAllWhere(state, {
-      predicate: where,
-      payload: payload,
-    })
-  }
-
-  return _concat(state, payload)
+  return _insertAllWhere(state, {
+    predicate: where,
+    payload: payload,
+  })
 }
 
 export const _map = (state, mapper) => state.map(mapper)
@@ -83,14 +75,13 @@ export const _replace = (state, {where, payload}) =>
       R.pipe(
         R.addIndex(R.findIndex)(where),
         R.ifElse(R.lte(0), R.identity, R.always(Infinity)),
-        R.lensIndex,
+        R.lensIndex
       ),
       R.always(payload),
       R.identity,
-    ]),
+    ])
   )
 
 export const _shiftN = (state, payload) => state.slice(payload || 1, Infinity)
 
-export const _unshift = (state, payload) =>
-  Array.isArray(payload) ? [...payload, ...state] : [payload, ...state]
+export const _unshift = (state, payload) => [payload, ...state]

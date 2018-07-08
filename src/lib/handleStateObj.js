@@ -1,6 +1,5 @@
 import * as R from 'ramda'
 import {singular} from 'pluralize'
-import isPlainObj from 'ramda-adjunct/lib/isPlainObj'
 import {
   _createTypedPropSetterFor,
   _createTypedSetterFor,
@@ -25,7 +24,7 @@ import {
 } from './utils.array'
 
 // TODO: implement and test all the other convenience actions
-const addArrayActions = R.curry((modelName, propName, initialState) => {
+const addArrayActions = R.curry((opts, modelName, propName, initialState) => {
   // using arbitrary readable names for distinguishing singular and plural
   const People = _toTitle(propName)
   const Person = _toTitle(singular(People))
@@ -62,9 +61,10 @@ const addArrayActions = R.curry((modelName, propName, initialState) => {
     [`replace${Person}`]: _replace_,
     [`reset${People}`]: _reset_,
     [`set${People}`]: _createTypedPropSetterFor(
+      opts,
       initialState,
       modelName,
-      propName,
+      propName
     ),
     [`shift${People}`]: _shiftN_,
     [`unshift${People}`]: _unshift_,
@@ -81,55 +81,59 @@ const addObjActions = R.curry((opts, modelName, propName, initialState) => {
   return {
     [`reset${PropName}`]: _toPropSetter(propName, () => initialState),
     [`set${PropName}`]: _createTypedPropSetterFor(
+      opts,
       initialState,
       modelName,
-      propName,
+      propName
     ),
-    [`update${PropName}`]: (state, payload) => ({
-      ...state,
-      [propName]: {
-        ...state[propName],
-        ...payload,
-      },
-    }),
+    // [`update${PropName}`]: (state, payload) => ({
+    //   ...state,
+    //   [propName]: {
+    //     ...state[propName],
+    //     ...payload,
+    //   },
+    // }),
   }
 })
 
-const addBooleanActions = R.curry((modelName, propName, initialState) => {
+const addBooleanActions = R.curry((opts, modelName, propName, initialState) => {
   const PropName = _toTitle(propName)
 
   return {
     [`reset${PropName}`]: _toPropSetter(propName, () => initialState),
     [`set${PropName}`]: _createTypedPropSetterFor(
+      opts,
       initialState,
       modelName,
-      propName,
+      propName
     ),
   }
 })
 
-const addStringActions = R.curry((modelName, propName, initialState) => {
+const addStringActions = R.curry((opts, modelName, propName, initialState) => {
   const PropName = _toTitle(propName)
 
   return {
     [`reset${PropName}`]: _toPropSetter(propName, () => initialState),
     [`set${PropName}`]: _createTypedPropSetterFor(
+      opts,
       initialState,
       modelName,
-      propName,
+      propName
     ),
   }
 })
 
-const addNumberActions = R.curry((modelName, propName, initialState) => {
+const addNumberActions = R.curry((opts, modelName, propName, initialState) => {
   const PropName = _toTitle(propName)
 
   return {
     [`reset${PropName}`]: _toPropSetter(propName, () => initialState),
     [`set${PropName}`]: _createTypedPropSetterFor(
+      opts,
       initialState,
       modelName,
-      propName,
+      propName
     ),
   }
 })
@@ -142,21 +146,36 @@ const fromPairsAccumActionsFor = R.curry(
       return R.applyTo(initialState)(
         R.pipe(
           R.cond([
-            [isPlainObj, addObjActions(opts, modelName, propName)],
-            [R.is(Array), addArrayActions(modelName, propName)],
-            [R.is(Boolean), addBooleanActions(modelName, propName)],
-            [R.is(String), addStringActions(modelName, propName)],
-            [R.is(Number), addNumberActions(modelName, propName)],
+            [
+              R.o(R.equals('Object'), R.type),
+              addObjActions(opts, modelName, propName),
+            ],
+            [
+              R.o(R.equals('Array'), R.type),
+              addArrayActions(opts, modelName, propName),
+            ],
+            [
+              R.o(R.equals('Boolean'), R.type),
+              addBooleanActions(opts, modelName, propName),
+            ],
+            [
+              R.o(R.equals('String'), R.type),
+              addStringActions(opts, modelName, propName),
+            ],
+            [
+              R.o(R.equals('Number'), R.type),
+              addNumberActions(opts, modelName, propName),
+            ],
             [
               R.both(nilIsNotAllowed, R.isNil),
               _handleNil(`${modelName}.${propName}`),
             ],
             [R.always(true), () => R.always({})],
           ]),
-          R.merge(accum),
-        ),
+          R.merge(accum)
+        )
       )
-    },
+    }
 )
 
 /**
@@ -171,9 +190,9 @@ export const handleInitialStateObject = R.curry(
         R.merge({
           reset: () => initialState,
           'rootState/reset': () => initialState,
-          set: _createTypedSetterFor(initialState, modelName),
-        }),
-      ),
+          set: _createTypedSetterFor(opts, initialState, modelName),
+        })
+      )
     )
-  },
+  }
 )

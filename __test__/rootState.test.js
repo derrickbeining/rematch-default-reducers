@@ -20,7 +20,7 @@ context('Integration with @rematch/core', function() {
       'dispatch.rootState.reset resets all models to initial state',
       function() {
         const initialRootState = getState()
-        //
+        // ------------- MODIFY ALL MODELS -----------------
         ;(function setupArrayState() {
           const initialState = models.modelWithArrayState.state
 
@@ -70,10 +70,12 @@ context('Integration with @rematch/core', function() {
           expect(getState().modelWithStringState).not.to.equal(initialState)
           expect(getState().modelWithStringState).to.equal(newState)
         })()
+
+        // --------- TEST ---------------
         expect(getState()).not.to.deep.equal(initialRootState)
         dispatch.rootState.reset()
         expect(getState()).to.deep.equal(initialRootState)
-      },
+      }
     )
   })
 })

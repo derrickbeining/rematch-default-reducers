@@ -60,7 +60,7 @@
   "module": "src/index.js",
   "name": "rematch-default-reducers",
   "nyc": {
-    "branches": 80,
+    "branches": 99,
     "cache": true,
     "check-coverage": true,
     "exclude": [
@@ -73,13 +73,13 @@
       "**/node_modules/**",
       "dist/**"
     ],
-    "functions": 90,
-    "lines": 90,
+    "functions": 99,
+    "lines": 99,
     "per-file": false,
     "reporter": [
       "text"
     ],
-    "statements": 90
+    "statements": 99
   },
   "repository": {
     "type": "git",
@@ -91,14 +91,14 @@
     "build:p": "NODE_ENV=production webpack",
     "clean": "rimraf dist",
     "commit": "git-cz",
-    "dev": "npm run build:d -w",
+    "dev": "npm run build:d -- -w",
     "lint": "eslint -f codeframe '*.js' './src/**/*.js'",
     "lint:fix": "eslint -f codeframe '*.js' './src/**/*.js' --fix",
     "precommit": "npm run lint && npm test",
     "prepublish": "npm run lint && npm test && npm run clean && npm run build",
     "test": "nyc npm run test:once -- --require ./src/index.js",
     "test:once": "NODE_ENV=test node ./node_modules/.bin/mocha '__test__' -r source-map-support/register -r @babel/register -r __test__/setup  --recursive --exit",
-    "test:w": "npm run test:once -w",
+    "test:w": "npm run test:once --  -w",
     "travis-deploy-once": "travis-deploy-once",
     "semantic-release": "semantic-release"
   },
