@@ -11,9 +11,9 @@ node_js:
 script:
   - commitlint-travis
   - yarn test
+  - yarn coverage
 before_deploy:
   - yarn build
-  - yarn coverage
 deploy:
   provider: script
   skip_cleanup: true
