@@ -2,13 +2,9 @@
 import * as R from 'ramda'
 import {handleInitialStateArray} from './lib/handleStateArray'
 import {handleInitialStateObject} from './lib/handleStateObj'
-import {
-  handleInitialStateString,
-  handleInitialStateBoolean,
-  handleInitialStateNumber,
-  handleUnsupportedInitialStateType,
-} from './lib/handleStatePrimitives'
+import {handleInitialStateOther} from './lib/handleStatePrimitives'
 import {_handleNil} from './lib/utils'
+import {isVanillaObj} from './lib/utils.obj'
 /**
  * :: opts -> (model, modelName -> modelWithDefaultReducers)
  *
@@ -22,13 +18,14 @@ const createReducersFromModel = (opts) =>
   R.pipe(
     R.useWith(
       R.cond([
-        [R.o(R.equals('Object'), R.type), handleInitialStateObject(opts)],
+        [isVanillaObj, handleInitialStateObject(opts)],
         [R.o(R.equals('Array'), R.type), handleInitialStateArray(opts)],
-        [R.o(R.equals('Boolean'), R.type), handleInitialStateBoolean(opts)],
-        [R.o(R.equals('String'), R.type), handleInitialStateString(opts)],
-        [R.o(R.equals('Number'), R.type), handleInitialStateNumber(opts)],
+        [
+          R.anyPass([R.is(String), R.is(Number), R.is(Boolean)]),
+          handleInitialStateOther(opts),
+        ],
         [R.both(R.isNil, () => !opts.allowNil), R.flip(_handleNil)],
-        [R.always(true), handleUnsupportedInitialStateType],
+        [R.always(true), handleInitialStateOther(opts)],
       ]),
       [R.prop('state'), R.identity]
     ),

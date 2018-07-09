@@ -22,6 +22,7 @@ import {
   _shiftN,
   _unshift,
 } from './utils.array'
+import {isVanillaObj} from './utils.obj'
 
 // TODO: implement and test all the other convenience actions
 const addArrayActions = R.curry((opts, modelName, propName, initialState) => {
@@ -86,57 +87,24 @@ const addObjActions = R.curry((opts, modelName, propName, initialState) => {
       modelName,
       propName
     ),
-    // [`update${PropName}`]: (state, payload) => ({
-    //   ...state,
-    //   [propName]: {
-    //     ...state[propName],
-    //     ...payload,
-    //   },
-    // }),
   }
 })
 
-const addBooleanActions = R.curry((opts, modelName, propName, initialState) => {
-  const PropName = _toTitle(propName)
+const addOtherTypeActions = R.curry(
+  (opts, modelName, propName, initialState) => {
+    const PropName = _toTitle(propName)
 
-  return {
-    [`reset${PropName}`]: _toPropSetter(propName, () => initialState),
-    [`set${PropName}`]: _createTypedPropSetterFor(
-      opts,
-      initialState,
-      modelName,
-      propName
-    ),
+    return {
+      [`reset${PropName}`]: _toPropSetter(propName, () => initialState),
+      [`set${PropName}`]: _createTypedPropSetterFor(
+        opts,
+        initialState,
+        modelName,
+        propName
+      ),
+    }
   }
-})
-
-const addStringActions = R.curry((opts, modelName, propName, initialState) => {
-  const PropName = _toTitle(propName)
-
-  return {
-    [`reset${PropName}`]: _toPropSetter(propName, () => initialState),
-    [`set${PropName}`]: _createTypedPropSetterFor(
-      opts,
-      initialState,
-      modelName,
-      propName
-    ),
-  }
-})
-
-const addNumberActions = R.curry((opts, modelName, propName, initialState) => {
-  const PropName = _toTitle(propName)
-
-  return {
-    [`reset${PropName}`]: _toPropSetter(propName, () => initialState),
-    [`set${PropName}`]: _createTypedPropSetterFor(
-      opts,
-      initialState,
-      modelName,
-      propName
-    ),
-  }
-})
+)
 
 const fromPairsAccumActionsFor = R.curry(
   (modelName, opts) =>
@@ -146,31 +114,20 @@ const fromPairsAccumActionsFor = R.curry(
       return R.applyTo(initialState)(
         R.pipe(
           R.cond([
-            [
-              R.o(R.equals('Object'), R.type),
-              addObjActions(opts, modelName, propName),
-            ],
+            [isVanillaObj, addObjActions(opts, modelName, propName)],
             [
               R.o(R.equals('Array'), R.type),
               addArrayActions(opts, modelName, propName),
             ],
             [
-              R.o(R.equals('Boolean'), R.type),
-              addBooleanActions(opts, modelName, propName),
-            ],
-            [
-              R.o(R.equals('String'), R.type),
-              addStringActions(opts, modelName, propName),
-            ],
-            [
-              R.o(R.equals('Number'), R.type),
-              addNumberActions(opts, modelName, propName),
+              R.anyPass([R.is(String), R.is(Boolean), R.is(Number)]),
+              addOtherTypeActions(opts, modelName, propName),
             ],
             [
               R.both(nilIsNotAllowed, R.isNil),
               _handleNil(`${modelName}.${propName}`),
             ],
-            [R.always(true), () => R.always({})],
+            [R.always(true), addOtherTypeActions(opts, modelName, propName)],
           ]),
           R.merge(accum)
         )

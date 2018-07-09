@@ -21,6 +21,14 @@ context('Integration with @rematch/core', function() {
       function() {
         const initialRootState = getState()
         // ------------- MODIFY ALL MODELS -----------------
+        ;(function setupUnsupportedState() {
+          const initialState = getState().modelWithUnusualState
+          const newState = new Map([['key', 'val']])
+
+          dispatch.modelWithUnusualState.set(newState)
+          expect(getState().modelWithUnusualState).not.to.equal(initialState)
+          expect(getState().modelWithUnusualState).to.equal(newState)
+        })()
         ;(function setupArrayState() {
           const initialState = models.modelWithArrayState.state
 
@@ -54,6 +62,7 @@ context('Integration with @rematch/core', function() {
               otherWords: ['good-bye'],
               otherObj: {deep: 'so derp'},
             },
+            unusualType: new Map([['key', 'val']]),
           }
 
           const expected = R.mergeDeepRight(initial, updater)
