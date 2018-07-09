@@ -19,49 +19,14 @@ const _guardTypes = R.curry((opts, reducers, initialState, modelName) =>
   )
 )
 
-/**
- * :: (model, modelName) -> Object(reducers)
- */
-export const handleInitialStateString = R.curry(
+export const handleInitialStateOther = R.curry(
   (opts, initialState, modelName) => {
-    const createStringReducers = _guardTypes(opts)({
+    const createOtherTypesReducers = _guardTypes(opts)({
       reset: () => initialState,
       'rootState/reset': () => initialState,
       set: _returnSecondArg,
     })
 
-    return createStringReducers(initialState, modelName)
+    return createOtherTypesReducers(initialState, modelName)
   }
 )
-
-/**
- * :: (model, modelName) -> Object(reducers)
- */
-export const handleInitialStateBoolean = R.curry(
-  (opts, initialState, modelName) => {
-    const createBooleanReducers = _guardTypes(opts)({
-      reset: () => initialState,
-      'rootState/reset': () => initialState,
-      set: _returnSecondArg,
-    })
-
-    return createBooleanReducers(initialState, modelName)
-  }
-)
-
-/**
- * :: (model, modelName) -> Object(reducers)
- */
-export const handleInitialStateNumber = R.curry(
-  (opts, initialState, modelName) => {
-    const createNumberReducers = _guardTypes(opts)({
-      reset: () => initialState,
-      'rootState/reset': () => initialState,
-      set: _returnSecondArg,
-    })
-
-    return createNumberReducers(initialState, modelName)
-  }
-)
-
-export const handleUnsupportedInitialStateType = () => ({})

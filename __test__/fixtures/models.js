@@ -11,7 +11,7 @@ export const modelWithObjectState = {
       otherWords: [],
       otherObj: {deep: 'so deep'},
     },
-    unsupported: new Map(),
+    unusualType: new Map(),
   },
 }
 
@@ -31,7 +31,7 @@ export const modelWithNumberState = {
   state: 0,
 }
 
-export const modelWithUnsupportedState = {
+export const modelWithUnusualState = {
   state: new Map(),
 }
 
@@ -57,5 +57,5 @@ export const models = {
   modelWithStringState,
   modelWithBooleanState,
   modelWithNumberState,
-  modelWithUnsupportedState,
+  modelWithUnusualState,
 }

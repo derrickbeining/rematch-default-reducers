@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import isPlainObj from 'ramda-adjunct/lib/isPlainObj'
+import {isVanillaObj} from './utils.obj'
 
 /* eslint-disable-next-line fp/no-nil, better/explicit-return */
 export const _handleNil = R.curry((pathToState, initialState) => {
@@ -11,26 +11,26 @@ export const _handleNil = R.curry((pathToState, initialState) => {
 })
 
 // prettier-ignore
-const _toInterfaceSpec = R.map(val => isPlainObj(val)
-  ? R.both(isPlainObj, R.where(_toInterfaceSpec(val)))
+const _toInterfaceSpec = R.map(val => isVanillaObj(val)
+  ? R.both(isVanillaObj, R.where(_toInterfaceSpec(val)))
   : R.pipe(R.type, R.equals(R.type(val)))
 )
 
 // prettier-ignore
 const _mapObjDeep = fn => R.map(
-  val => isPlainObj(val)
+  val => isVanillaObj(val)
     ? fn(_mapObjDeep(fn)(val))
     : fn(val)
 )
 // prettier-ignore
 export const _hasNilKeysDeep = R.pipe(
-  _mapObjDeep(R.ifElse(isPlainObj, R.toPairs, R.identity)),
+  _mapObjDeep(R.ifElse(isVanillaObj, R.toPairs, R.identity)),
   R.toPairs,
   R.flatten,
   R.any(R.isNil)
 )
 // prettier-ignore
-const _describeInterface = R.map(val => isPlainObj(val)
+const _describeInterface = R.map(val => isVanillaObj(val)
   ? _describeInterface(val)
   : R.type(val)
 )
@@ -58,12 +58,12 @@ export const _createTypedSetterFor = R.curry(
     const payloadType = R.type(payload)
     const isCorrectType = payloadType === initialType
 
-    if (!typeCheck && R.all(isPlainObj)([initialState, payload])) {
+    if (!typeCheck && R.all(isVanillaObj)([initialState, payload])) {
       return R.mergeDeepRight(state, payload)
     }
     if (!typeCheck) return payload
 
-    if (isCorrectType && !isPlainObj(payload)) return payload
+    if (isCorrectType && !isVanillaObj(payload)) return payload
     if (!isCorrectType) {
       /* eslint-disable-next-line fp/no-unused-expression */
       const payloadString = JSON.stringify(payload, null, '  ')
@@ -97,13 +97,13 @@ export const _createTypedPropSetterFor = R.curry(
     const setProp = _toPropSetter(propName, _returnSecondArg)
     const updateProp = _toPropSetter(propName, R.mergeDeepRight)
 
-    if (!typeCheck && isPlainObj(payload)) return updateProp(state, payload)
+    if (!typeCheck && isVanillaObj(payload)) return updateProp(state, payload)
 
     if (!typeCheck) return setProp(state, payload)
 
-    if (isCorrectType && !isPlainObj(payload)) return setProp(state, payload)
+    if (isCorrectType && !isVanillaObj(payload)) return setProp(state, payload)
 
-    if (!isCorrectType && !isPlainObj(payload)) {
+    if (!isCorrectType && !isVanillaObj(payload)) {
       const payloadString = JSON.stringify(payload, null, '  ')
       /* eslint-disable-next-line fp/no-unused-expression */
       throw new TypeError(
