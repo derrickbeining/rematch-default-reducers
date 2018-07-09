@@ -1,5 +1,6 @@
 # Rematch Default Reducers
 
+[![npm](https://img.shields.io/npm/v/rematch-default-reducers.svg?style=flat)](https://www.npmjs.com/package/rematch-default-reducers)
 [![codecov](https://codecov.io/gh/derrickbeining/rematch-default-reducers/branch/master/graph/badge.svg)](https://codecov.io/gh/derrickbeining/rematch-default-reducers)
 [![Build Status](https://travis-ci.com/derrickbeining/rematch-default-reducers.svg?branch=master)](https://travis-ci.com/derrickbeining/rematch-default-reducers)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
@@ -38,51 +39,17 @@ export default init({
 
 Below is the API for `withDefaultReducers` and the reducers it generates.
 
-- [Rematch Default Reducers](#rematch-default-reducers)
-  - [Installation](#installation)
-  - [Usage:](#usage)
-  - [Documentation](#documentation)
-    - [`withDefaultReducers(models, [opts])`](#withdefaultreducersmodels-opts)
-    - [`dispatch.${modelName}.set(payload, [meta])`](#dispatchmodelnamesetpayload-meta)
-    - [`dispatch.${modelName}.reset()`](#dispatchmodelnamereset)
-    - [`dispatch.rootState.reset()`](#dispatchrootstatereset)
-    - [**When `${modelName}.state` is a `{}`-Object**](#when-modelnamestate-is-a--object)
-      - [`dispatch.${modelName}.set${PropName}(payload, [meta])`](#dispatchmodelnamesetpropnamepayload-meta)
-      - [`dispatch.${modelName}.reset${PropName}`](#dispatchmodelnameresetpropname)
-      - [**Extra Reducers for `Array` Type Properties**](#extra-reducers-for-array-type-properties)
-      - [`dispatch.myModel.concatThings(payload: any[])`](#dispatchmymodelconcatthingspayload-any)
-      - [`dispatch.myModel.concatThingsTo(payload: any[])`](#dispatchmymodelconcatthingstopayload-any)
-      - [`dispatch.myModel.filterThings(payload: { where })`](#dispatchmymodelfilterthingspayload--where)
-      - [`dispatch.myModel.insertThing(payload: { where, payload })`](#dispatchmymodelinsertthingpayload--where-payload)
-      - [`dispatch.myModel.insertThings(payload: { where, payload })`](#dispatchmymodelinsertthingspayload--where-payload)
-      - [`dispatch.myModel.mapThings(mapFn)`](#dispatchmymodelmapthingsmapfn)
-      - [`dispatch.myModel.popThings(n?: number)`](#dispatchmymodelpopthingsn-number)
-      - [`dispatch.myModel.pushThing(payload: any)`](#dispatchmymodelpushthingpayload-any)
-      - [`dispatch.myModel.removeThing(payload: any)`](#dispatchmymodelremovethingpayload-any)
-      - [`dispatch.myModel.removeThing(payload: { where })`](#dispatchmymodelremovethingpayload--where)
-      - [`dispatch.myModel.removeThings(payload: { where })`](#dispatchmymodelremovethingspayload--where)
-      - [`dispatch.myModel.replaceThing(payload: { where, payload })`](#dispatchmymodelreplacethingpayload--where-payload)
-      - [`dispatch.myModel.shiftThings(n?: number)`](#dispatchmymodelshiftthingsn-number)
-      - [`dispatch.myModel.unshiftThing(payload: any)`](#dispatchmymodelunshiftthingpayload-any)
-    - [When `${modelName}.state` is `[]` (`Array`)](#when-modelnamestate-is--array)
-      - [`dispatch.myModel.concat(payload: any[])`](#dispatchmymodelconcatpayload-any)
-      - [`dispatch.myModel.concatTo(payload: any[])`](#dispatchmymodelconcattopayload-any)
-      - [`dispatch.myModel.filter(payload: { where })`](#dispatchmymodelfilterpayload--where)
-      - [`dispatch.myModel.insert(payload: { where, payload })`](#dispatchmymodelinsertpayload--where-payload)
-      - [`dispatch.myModel.insertAll(payload: { where, payload })`](#dispatchmymodelinsertallpayload--where-payload)
-      - [`dispatch.myModel.map(mapFn)`](#dispatchmymodelmapmapfn)
-      - [`dispatch.myModel.pop(n?: number)`](#dispatchmymodelpopn-number)
-      - [`dispatch.myModel.push(payload: any)`](#dispatchmymodelpushpayload-any)
-      - [`dispatch.myModel.remove(payload: any)`](#dispatchmymodelremovepayload-any)
-      - [`dispatch.myModel.remove(payload: { where })`](#dispatchmymodelremovepayload--where)
-      - [`dispatch.myModel.removeAll(payload: { where })`](#dispatchmymodelremoveallpayload--where)
-      - [`dispatch.myModel.replace(payload: { where, payload })`](#dispatchmymodelreplacepayload--where-payload)
-      - [`dispatch.myModel.shift(n?: number)`](#dispatchmymodelshiftn-number)
-      - [`dispatch.myModel.unshift(payload: any)`](#dispatchmymodelunshiftpayload-any)
+- [`withDefaultReducers(models, [opts])`](#withdefaultreducersmodels-opts)
+- [`dispatch.${modelName}.set(payload, [meta])`](#dispatchmodelnamesetpayload-meta)
+- [`dispatch.${modelName}.reset()`](#dispatchmodelnamereset)
+- [`dispatch.rootState.reset()`](#dispatchrootstatereset)
+- [**When `${modelName}.state` is a `{}`-Object**](#when-modelnamestate-is-a--object)
 
----
+  - [`dispatch.${modelName}.set${PropName}(payload, [meta])`](#dispatchmodelnamesetpropnamepayload-meta)
+  - [`dispatch.${modelName}.reset${PropName}`](#dispatchmodelnameresetpropname)
+  - [**Extra Reducers for `Array` Type Properties**](#extra-reducers-for-array-type-properties)
 
----
+- [**When `${modelName}.state` is `[]` (`Array`)**](#when-modelnamestate-is--array)
 
 ---
 
@@ -256,15 +223,17 @@ const {dispatch, getState} = init({
 })
 ```
 
-- [`dispatch.myModel.concatThings(payload: any[])`](#dispatchmymodelconcatthingspayload)
-- [`dispatch.myModel.concatThingsTo(payload: any[])`](#dispatchmymodelconcatthingstopayload)
+The following reducers would be generated:
+
+- [`dispatch.myModel.concatThings(payload: any[])`](#dispatchmymodelconcatthingspayload-any)
+- [`dispatch.myModel.concatThingsTo(payload: any[])`](#dispatchmymodelconcatthingstopayload-any)
 - [`dispatch.myModel.filterThings(payload: { where })`](#dispatchmymodelfilterthingspayload--where)
 - [`dispatch.myModel.insertThing(payload: { where, payload })`](#dispatchmymodelinsertthingpayload--where-payload)
 - [`dispatch.myModel.insertThings(payload: { where, payload })`](#dispatchmymodelinsertthingspayload--where-payload)
 - [`dispatch.myModel.mapThings(mapFn)`](#dispatchmymodelmapthingsmapfn)
 - [`dispatch.myModel.popThings(n?: number)`](#dispatchmymodelpopthingsn-number)
-- [`dispatch.myModel.pushThing(payload: any)`](#dispatchmymodelpushthingpayload)
-- [`dispatch.myModel.removeThing(payload: any)`](#dispatchmymodelremovethingpayload)
+- [`dispatch.myModel.pushThing(payload: any)`](#dispatchmymodelpushthingpayload-any)
+- [`dispatch.myModel.removeThing(payload: any)`](#dispatchmymodelremovethingpayload-any)
 - [`dispatch.myModel.removeThing(payload: { where })`](#dispatchmymodelremovethingpayload--where)
 - [`dispatch.myModel.removeThings(payload: { where })`](#dispatchmymodelremovethingspayload--where)
 - [`dispatch.myModel.replaceThing(payload: { where, payload })`](#dispatchmymodelreplacethingpayload--where-payload)
@@ -530,11 +499,7 @@ getState().myModel.things // => ['Howdy!', "won't", 'you', 'be', 'my', 'neighbor
 
 ---
 
----
-
----
-
-### When `${modelName}.state` is `[]` (`Array`)
+### **When `${modelName}.state` is `[]` (`Array`)**
 
 When `${modelName}.state` is an `Array`, that model gets several other reducers
 in addition to [`set`](#dispatchmodelnamesetpropnamepayload-meta) and
@@ -553,7 +518,22 @@ const {dispatch, getState} = init({
 })
 ```
 
-Below are the reducers that would be generated
+The following reducers that would be generated:
+
+- [`dispatch.myModel.concat(payload: any[])`](#dispatchmymodelconcatpayload-any)
+- [`dispatch.myModel.concatTo(payload: any[])`](#dispatchmymodelconcattopayload-any)
+- [`dispatch.myModel.filter(payload: { where })`](#dispatchmymodelfilterpayload--where)
+- [`dispatch.myModel.insert(payload: { where, payload })`](#dispatchmymodelinsertpayload--where-payload)
+- [`dispatch.myModel.insertAll(payload: { where, payload })`](#dispatchmymodelinsertallpayload--where-payload)
+- [`dispatch.myModel.map(mapFn)`](#dispatchmymodelmapmapfn)
+- [`dispatch.myModel.pop(n?: number)`](#dispatchmymodelpopn-number)
+- [`dispatch.myModel.push(payload: any)`](#dispatchmymodelpushpayload-any)
+- [`dispatch.myModel.remove(payload: any)`](#dispatchmymodelremovepayload-any)
+- [`dispatch.myModel.remove(payload: { where })`](#dispatchmymodelremovepayload--where)
+- [`dispatch.myModel.removeAll(payload: { where })`](#dispatchmymodelremoveallpayload--where)
+- [`dispatch.myModel.replace(payload: { where, payload })`](#dispatchmymodelreplacepayload--where-payload)
+- [`dispatch.myModel.shift(n?: number)`](#dispatchmymodelshiftn-number)
+- [`dispatch.myModel.unshift(payload: any)`](#dispatchmymodelunshiftpayload-any)
 
 ---
 
