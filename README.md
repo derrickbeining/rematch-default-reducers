@@ -55,6 +55,8 @@ Below is the API for `withDefaultReducers` and the reducers it generates.
 
 ### `withDefaultReducers(models, [opts])`
 
+> the named and only export of `rematch-default-reducer`
+
 - `models: {[modelName]: {state: any, reducers?: {[reducerName]: function}}}`
   - the `models` config expected by `init()` from `@rematch/core`
   - `state` may not contain `null` or `undefined` values, or else `TypeError`
@@ -70,7 +72,11 @@ Below is the API for `withDefaultReducers` and the reducers it generates.
 
 ---
 
-### `dispatch.${modelName}.set(payload, [meta])`
+### **Common Default Reducers**
+
+> these default reducers are provided for all models
+
+#### `dispatch.${modelName}.set(payload, [meta])`
 
 - `payload`: `any` (required) - the value to set `${modelName}.state` to
 
@@ -95,22 +101,34 @@ When `${modelName}.state` is **NOT** a `{}`-Object
 
 ---
 
-### `dispatch.${modelName}.reset()`
+#### `dispatch.${modelName}.reset()`
 
 Sets `${modelName}.state` to the value it was initialized with.
 
 ---
 
-### `dispatch.rootState.reset()`
+### **The `rootState` Model and Reducers**
+
+> `withDefaultReducers` adds a pseudo-model called `rootState`. It has no
+> `state` of its own, and only exists to provide a couple default reducers for
+> performing updates across multiple models in a single action.
+
+#### `dispatch.rootState.set(payload, [meta])`
+
+- `payload: {[modelName: string]: any}` - an updater object which will
+  effectively be deep-merged with the `redux` store in order to produce the next
+  state in a single action.
+- `meta?: {typeCheck?: boolean}` (optional) - options for the currently
+  dispatched action
+  - `typeCheck?: boolean` (optional) - enables/disables type-checking that
+    prevents `set` from altering the type/interface of the model. **Default:
+    `true`**.
+
+---
+
+#### `dispatch.rootState.reset()`
 
 Resets all models back to their initial state.
-
-`withDefaultReducers` adds a pseudo-model to the `models` config called
-`rootState`. This model has no `state` but receives one default reducer called
-`reset`.
-
-All models get a default reducer called `rootState/reset`, which is triggered by
-`dispatch.rootState.reset()` and resets each model to its initial state.
 
 ---
 
