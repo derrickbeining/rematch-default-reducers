@@ -10,7 +10,7 @@ const _guardTypes = R.curry((opts, reducers, initialState, modelName) =>
 
       if (typeCheck && R.not(R.equals(initialStateType, R.type(result)))) {
         throw new TypeError(
-          `${modelName} was initialized as a(n) ${initialStateType}, but dispatch.${modelName}.${reducerName}() attempted to perform an operation that would set it to a non-${initialStateType} value. You should only set your models and their properties to values of the type with which you initialize them.`
+          `${modelName} was initialized as a(n) ${initialStateType}, but ${modelName}/${reducerName} attempted to perform an operation that would set it to a non-${initialStateType} value. You should only set your models and their properties to values of the type with which you initialize them.`
         )
       }
 
@@ -24,6 +24,8 @@ export const handleInitialStateOther = R.curry(
     const createOtherTypesReducers = _guardTypes(opts)({
       reset: () => initialState,
       'rootState/reset': () => initialState,
+      'rootState/set': (state, payload) =>
+        payload[modelName] === undefined ? state : payload[modelName],
       set: _returnSecondArg,
     })
 

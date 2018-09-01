@@ -17,6 +17,50 @@ context('Integration with @rematch/core', function() {
 
   context('rootState action(s)', function() {
     specify(
+      "dispatch.rootState.set can update any and all models' state",
+      function() {
+        const updater = {
+          modelWithObjectState: {
+            isBoolean: false,
+            someString: 'false',
+            someNumber: 2,
+            words: ['hey'],
+            obj: {
+              otherString: 'jk',
+              otherNumber: 11,
+              otherBoolean: true,
+              otherWords: ['hiya'],
+              otherObj: {deep: 'much derp'},
+            },
+            unusualType: new Map([['thing', 'muh thing']]),
+          },
+
+          modelWithArrayState: ['of mind', 'or something'],
+          modelWithStringState: 'bean',
+          modelWithBooleanState: false,
+          modelWithNumberState: 10,
+          modelWithUnusualState: new Map([['wut', /wut/]]),
+        }
+
+        const expected = R.mergeDeepRight(getState(), updater)
+        dispatch.rootState.set(updater)
+        const actual = getState()
+
+        expect(actual).to.deep.equal(expected)
+      }
+    )
+
+    specify(
+      'rootState.set does not alter any model unless specified in the updater argument',
+      function() {
+        const expected = getState()
+        dispatch.rootState.set({nonExistent: 'nope'})
+        const actual = getState()
+
+        expect(actual).to.deep.equal(expected)
+      }
+    )
+    specify(
       'dispatch.rootState.reset resets all models to initial state',
       function() {
         const initialRootState = getState()

@@ -50,43 +50,46 @@ export const _toPropSetter = R.curry((propName, setter, state, payload) => ({
   [propName]: setter(state[propName], payload),
 }))
 
-export const _createTypedSetterFor = R.curry(
-  /* eslint-disable-next-line fp/no-nil */
-  (opts, initialState, modelName, state, payload, meta = {}) => {
-    const {typeCheck} = R.merge(opts, meta)
-    const initialType = R.type(initialState)
-    const payloadType = R.type(payload)
-    const isCorrectType = payloadType === initialType
+/* eslint-disable-next-line fp/no-nil */
+export const _createTypedSetterFor = ({
+  opts,
+  initialState,
+  modelName,
+  actionName,
+}) => (state, payload, meta = {}) => {
+  const {typeCheck} = R.merge(opts, meta)
+  const initialType = R.type(initialState)
+  const payloadType = R.type(payload)
+  const isCorrectType = payloadType === initialType
 
-    if (!typeCheck && R.all(isVanillaObj)([initialState, payload])) {
-      return R.mergeDeepRight(state, payload)
-    }
-    if (!typeCheck) return payload
+  if (!typeCheck && R.all(isVanillaObj)([initialState, payload])) {
+    return R.mergeDeepRight(state, payload)
+  }
+  if (!typeCheck) return payload
 
-    if (isCorrectType && !isVanillaObj(payload)) return payload
-    if (!isCorrectType) {
-      /* eslint-disable-next-line fp/no-unused-expression */
-      const payloadString = JSON.stringify(payload, null, '  ')
-      throw new TypeError(
-        `[rematch/withDefaulReducers]: The \`payload\` of dispatch.${modelName}.set() does not satisfy the model's initial interface.\nModel "${modelName}" was initialized as type: ${initialType}\nBut tried to set: ${payloadString}\n\nTo avoid this error you should initialize your models with the exact interface/types your application expects AND avoid setting values that do not satify that interface (best-practice)\nOr if you wish to disable type checking, you can:\n1.) Disable type checking on individual dispatches by passing your action dispatchers {typeCheck: false} as the 2nd (\`meta\`) argument.\n\tE.g. dispatch.model.action(payload, {typeCheck: false})\n2.) Disable type checking for all default reducers by passing {typeCheck: false} as an option to \`withDefaultReducers\`.\n\n`
-      )
-    }
-
-    const altersInterfaceOf = R.complement(R.where(_toInterfaceSpec(payload)))
-
-    if (!altersInterfaceOf(initialState)) {
-      return R.mergeDeepRight(state, payload)
-    }
-
-    const iface = _describeInterface(initialState)
-    const initialInterface = JSON.stringify(iface, null, '  ')
-    const payloadString = JSON.stringify(payload, null, '  ')
+  if (isCorrectType && !isVanillaObj(payload)) return payload
+  if (!isCorrectType) {
     /* eslint-disable-next-line fp/no-unused-expression */
+    const payloadString = JSON.stringify(payload, null, '  ')
     throw new TypeError(
-      `[rematch/withDefaulReducers]: dispatch.${modelName}.set() attempted to alter the model's interface by setting values that differ from those with which the model was initialized.\n\nInitial interface for ${modelName}:\n ${initialInterface}\n\n Values attempted to set:\n${payloadString}\n\nTo avoid this error you should initialize your models with the exact interface/types your application expects AND avoid setting values that do not satify that interface (best-practice)\nOr if you wish to disable type checking, you can:\n1.) Disable type checking on individual dispatches by passing your action dispatchers {typeCheck: false} as the 2nd (\`meta\`) argument.\n\tE.g. dispatch.model.action(payload, {typeCheck: false})\n2.) Disable type checking for all default reducers by passing {typeCheck: false} as an option to \`withDefaultReducers\`.\n\n`
+      `[rematch/withDefaulReducers]: The \`payload\` of ${actionName} does not satisfy ${modelName}'s initial interface.\n"${modelName}" was initialized as type: ${initialType}\nBut tried to set: ${payloadString}\n\nTo avoid this error you should initialize your models with the exact interface/types your application expects AND avoid setting values that do not satify that interface (best-practice)\nOr if you wish to disable type checking, you can:\n1.) Disable type checking on individual dispatches by passing your action dispatchers {typeCheck: false} as the 2nd (\`meta\`) argument.\n\tE.g. dispatch.model.action(payload, {typeCheck: false})\n2.) Disable type checking for all default reducers by passing {typeCheck: false} as an option to \`withDefaultReducers\`.\n\n`
     )
   }
-)
+
+  const altersInterfaceOf = R.complement(R.where(_toInterfaceSpec(payload)))
+
+  if (!altersInterfaceOf(initialState)) {
+    return R.mergeDeepRight(state, payload)
+  }
+
+  const iface = _describeInterface(initialState)
+  const initialInterface = JSON.stringify(iface, null, '  ')
+  const payloadString = JSON.stringify(payload, null, '  ')
+  /* eslint-disable-next-line fp/no-unused-expression */
+  throw new TypeError(
+    `[rematch/withDefaulReducers]: ${actionName} attempted to alter ${modelName}'s interface by setting values that differ from those with which ${modelName} was initialized.\n\nInitial interface for ${modelName}:\n ${initialInterface}\n\n Values attempted to set:\n${payloadString}\n\nTo avoid this error you should initialize your models with the exact interface/types your application expects AND avoid setting values that do not satify that interface (best-practice)\nOr if you wish to disable type checking, you can:\n1.) Disable type checking on individual dispatches by passing your action dispatchers {typeCheck: false} as the 2nd (\`meta\`) argument.\n\tE.g. dispatch.model.action(payload, {typeCheck: false})\n2.) Disable type checking for all default reducers by passing {typeCheck: false} as an option to \`withDefaultReducers\`.\n\n`
+  )
+}
 
 export const _createTypedPropSetterFor = R.curry(
   /* eslint-disable-next-line fp/no-nil, fp/no-unused-expression */

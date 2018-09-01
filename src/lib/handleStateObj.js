@@ -147,7 +147,22 @@ export const handleInitialStateObject = R.curry(
         R.merge({
           reset: () => initialState,
           'rootState/reset': () => initialState,
-          set: _createTypedSetterFor(opts, initialState, modelName),
+          'rootState/set': (state, payload) => {
+            return payload[modelName]
+              ? _createTypedSetterFor({
+                  opts,
+                  initialState,
+                  modelName,
+                  actionName: 'rootState/set',
+                })(state, payload[modelName])
+              : state
+          },
+          set: _createTypedSetterFor({
+            opts,
+            initialState,
+            modelName,
+            actionName: `${modelName}/set`,
+          }),
         })
       )
     )
