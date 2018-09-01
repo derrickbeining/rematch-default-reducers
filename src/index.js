@@ -58,7 +58,10 @@ export const withDefaultReducers = (models, opts = {}) => {
         R.identity,
       ]),
       R.mergeDeepRight({
-        rootState: {reducers: {reset: () => null}, state: null},
+        rootState: {
+          reducers: {reset: R.identity, set: R.identity},
+          state: null,
+        },
       })
     )
   )
